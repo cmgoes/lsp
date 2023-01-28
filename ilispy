@@ -1,0 +1,19 @@
+import lsp
+lsp.conf.EXIT_ON_ERROR = False
+
+import signal
+import sys
+
+
+def _(sig, frame):
+    lsp.visitor.EX.throw(lsp.visitor.CURRENT_LOCATION,
+        "Halted execution, due to KILL SIGINT!")
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, _)
+
+try:
+    lsp.run('./repl.lsp')
+except EOFError:
+    print("\n\nCtrl+D --- EOF")
+    print("Bye-bye.\n")
